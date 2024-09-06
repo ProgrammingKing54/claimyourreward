@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim your Reward</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Header Styles */
+        #head {
+            background: linear-gradient(rgba(0, 0, 0, 0), #000000), url(images/lll.jfif);
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .text {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .text h1 {
+            font-size: 100px;
+            font-family: 'Kaushan Script', cursive;
+        }
+
+        .text p {
+            font-size: 30px;
+            font-style: italic;
+        }
+
+        /* Button Styles */
+        .button {
+            margin: 20px auto;
+        }
+
+        .button a {
+            width: 150px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0 10px;
+            padding: 12px 0;
+            color: #fff;
+            border: .5px solid #fff;
+            position: relative;
+            z-index: 1;
+            transition: color 0.5s;
+            font-size: 16px;
+            border-radius: 5px;
+            background-color: #2575fc;
+        }
+
+        .button a span {
+            width: 0;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+            z-index: -1;
+            transition: 0.5s;
+        }
+
+        .button a:hover span {
+            width: 100%;
+        }
+
+        .button a:hover {
+            color: #000;
+        }
+
+        /* Progress Bar Styles */
+        .progress-bar-container {
+            width: 80%;
+            background-color: #e0e0e0;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 3px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 15px;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        #shareCount {
+            font-size: 18px;
+            margin-top: 15px;
+            color: #2575fc;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 770px) {
+            .text h1 {
+                font-size: 44px;
+            }
+
+            .button a {
+                display: block;
+                margin: 20px auto;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="head">
+        <div class="text">
+            <h1>Congratulations You Just Won a Reward</h1>
+            <p>Share to claim your reward.</p>
+        </div>
+
+        <div class="button">
+            <a href="#" id="initialButton"><span></span>Share to Claim Reward</a> <!-- Initial button styled with your CSS -->
+        </div>
+
+        <!-- Share Buttons Container -->
+        <div id="shareButtons" class="hidden button">
+            <a href="#" id="shareFacebook"><span></span>Facebook</a>
+            <a href="#" id="shareTwitter"><span></span>Twitter</a>
+            <a href="#" id="shareWhatsApp"><span></span>WhatsApp</a>
+            <a href="#" id="shareLinkedIn"><span></span>LinkedIn</a>
+            <a href="#" id="shareReddit"><span></span>Reddit</a>
+            <a href="#" id="shareEmail"><span></span>Email</a>
+        </div>
+
+        <!-- Progress Bar and Share Count -->
+        <div class="progress-bar-container hidden" id="progressBarContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div id="shareCount" class="hidden">Shared with 0 out of 10 people</div> <!-- Share count display -->
+    </div>
+
+    <script>
+        const initialButton = document.getElementById('initialButton');
+        const shareButtons = document.getElementById('shareButtons');
+        const progressBar = document.getElementById('progressBar');
+        const progressBarContainer = document.getElementById('progressBarContainer');
+        const shareCountDisplay = document.getElementById('shareCount');
+        let shareCount = 0;
+        const totalSharesNeeded = 10;  // Set to 10 shares required
+        const websiteLink = 'https://your-website-link.com';  // Replace with your actual website link
+        const defaultMessage = `🎉 Wow! I just claimed an exclusive reward, and it was super easy! 🎁 Don't miss out – claim yours now! Click the link below and share with your friends to unlock your own reward. Trust me, you’ll want to get in on this! 👉 `;  // Default message to be shared with the link
+
+        initialButton.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            initialButton.parentElement.classList.add('hidden'); // Hide initial button's parent
+            shareButtons.classList.remove('hidden'); // Show share buttons
+            progressBarContainer.classList.remove('hidden'); // Show progress bar
+            shareCountDisplay.classList.remove('hidden'); // Show share count
+        });
+
+        function updateProgressBar() {
+            const progress = (shareCount / totalSharesNeeded) * 100;
+            progressBar.style.width = progress + '%';
+            shareCountDisplay.textContent = `Shared with ${shareCount} out of ${totalSharesNeeded} people`;
+
+            if (shareCount === totalSharesNeeded) {
+                alert('Sharing completed! You can now claim your reward.');
+                disableShareButtons();
+            }
+        }
+
+        function disableShareButtons() {
+            document.querySelectorAll('#shareButtons a').forEach(button => {
+                button.style.pointerEvents = 'none';  // Disable clicking
+                button.style.color = '#ccc';
+                button.style.borderColor = '#ccc';
+                button.style.cursor = 'not-allowed';
+            });
+        }
+
+        function shareLink(url) {
+            window.open(url, '_blank');
+            shareCount++;
+            updateProgressBar();
+        }
+
+        // Sharing URLs for various platforms with default message
+        document.getElementById('shareFacebook').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            shareLink(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(websiteLink)}&quote=${encodeURIComponent(defaultMessage)}`);
+        });
+
+        document.getElementById('shareTwitter').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            shareLink(`https://twitter.com/intent/tweet?url=${encodeURIComponent(websiteLink)}&text=${encodeURIComponent(defaultMessage)}`);
+        });
+
+        document.getElementById('shareWhatsApp').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            shareLink(`https://api.whatsapp.com/send?text=${encodeURIComponent(defaultMessage + ' ' + websiteLink)}`);
+        });
+
+        document.getElementById('shareLinkedIn').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            shareLink(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(websiteLink)}&summary=${encodeURIComponent(defaultMessage)}`);
+        });
+
+        document.getElementById('shareReddit').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            shareLink(`https://www.reddit.com/submit?url=${encodeURIComponent(websiteLink)}&title=${encodeURIComponent(defaultMessage)}`);
+        });
+
+        document.getElementById('shareEmail').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
+            shareLink(`mailto:?subject=${encodeURIComponent(defaultMessage)}&body=${encodeURIComponent('Here is something interesting: ' + websiteLink)}`);
+        });
+    </script>
+
+</body>
+</html>
